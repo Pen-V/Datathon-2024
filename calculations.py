@@ -99,9 +99,9 @@ def calcFixAcid(grape, timePassed):
 # fixed acidity = 8 + max(0, TitrativeAcidity * NormalDistribution(center = 4, S.D. = 0.5)) - time/10
     return 8 + max(0, grape.rTA * np.random.normal(4, 0.5)) - timePassed / 10
 
-def calcVolAcid(addedSO2, timePassed): 
+def calcVolAcid(addedSO2, timePassed, tempIndex): 
 # Volatile acidity = 2 over (1 + e^-(1/2)(x - SO2added^2 / 60))
-    return 2 / (1 + math.exp(-1/2*(timePassed - (addedSO2 * addedSO2) / 60)))
+    return 2 / (1 + (1 / tempIndex) * math.exp(-1/2*(timePassed - (addedSO2 * addedSO2) / 60)))
 
 def calcCitrAcid(grape, addedCitrAcid):
 # citric acid = TitrativeAcidity * 0.1 + addedCitricAcid
@@ -137,11 +137,11 @@ def calcSulphate(freeSO2, TotSO2):
 
 def calcAlcohol(yeast, tempIndex, timePassed): 
 # alcohol = alcTol - alcTol * e ^ -(sqrt(fermPower) / 5 / tempIndex) * time
-    return yeast.alcTol - yeast.alcTol * math.exp(math.sqrt(yeast.speed) / -5 / tempIndex * timePassed)
+    return yeast.alcTol - yeast.alcTol * math.exp(math.sqrt(yeast.speed) / -5 * tempIndex * timePassed)
 
 def ferment(grape, yeast, addedSO2, addedSugar, addedCitrAcid, timePassed, tempIndex):
     fixAcid = calcFixAcid(grape, timePassed)
-    volAcid = calcVolAcid(addedSO2, timePassed) 
+    volAcid = calcVolAcid(addedSO2, timePassed, tempIndex) 
     citrAcid = calcCitrAcid(grape, addedCitrAcid)
     alcohol = calcAlcohol(yeast, tempIndex, timePassed)
     resSug = calcResSug(grape, addedSugar, alcohol)
@@ -153,15 +153,3 @@ def ferment(grape, yeast, addedSO2, addedSugar, addedCitrAcid, timePassed, tempI
     sulphate = calcSulphate(freeSO2, totSO2)
 
     return [fixAcid, volAcid, citrAcid, resSug, chlorides, freeSO2, totSO2, density, pH, sulphate, alcohol]
-
-# texts = ["Welcome! Click on an ingredient to start",
-#         "Click on check mark to confirm your selection", 
-#         "You need to choose a type of grape first", 
-#         "Great! You have picked the grape"
-#         "You need to choose a type of yeast first", 
-#         "Great! You have picked the yeast"
-#         "You can add additional ingredients before fermenting", 
-#         "Congratulations! Your wine is finished!", 
-#         "Your wine tastes horrible :((", 
-#         "Your wine is exceptional :))", 
-# ]
