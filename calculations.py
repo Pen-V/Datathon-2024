@@ -12,30 +12,51 @@ def wineScoreCalculator(quality, fixAcid, volAcid, citAcid, resSug, chlorides, f
     else:
         return -1
     
+    message1 = ""
+    message2 = ""
+    message3 = ""
+    message4 = ""
+    message5 = ""
+    message6 = ""
+    if(quality == 1):
+        finalScore += 7
+    elif(quality == 0):
+        finalScore += 4
+    else:
+        return -1
+    
     if(GOOD and fixAcid > 8):
         finalScore += 0.2
     elif(not GOOD and fixAcid < 8):
         finalScore -= 0.2
+        message1 = "Your wine is not sour enough! Try different grape or fermenting for less time."
 
     if(volAcid > 0.4):
         finalScore -= 0.9
+        message2 = "Your wine contains too much bacteria! Try faster yeast, less time or more SO2."
     
-    if(citAcid > 0.3):
+    if(citAcid > 0.3 and citAcid < 0.6):
         finalScore += 0.5
+        message3 = "Good citric acid amount!"
 
     if(not GOOD and resSug > 3):
         finalScore -= 0.2
+        message4 = "Your wine is too sweet. Try a different grape and less sugar"
 
     if(not GOOD and chlorides > 0.1):
         finalScore -= 0.2
     
     if(not GOOD and freeSulDio < 10):
         finalScore -= 0.4
+        message5 = "You may have added too much SO2"
+
     elif(GOOD and freeSulDio > 15):
         finalScore -= 0.4
+        message5 = "You may have added too much SO2"
     
     if(totalSulDio > 50):
         finalscore -= 0.5
+        message5 = "You may have added too much SO2"
 
     if(density > 0.9975):
         finalScore -= 0.5
@@ -52,20 +73,24 @@ def wineScoreCalculator(quality, fixAcid, volAcid, citAcid, resSug, chlorides, f
     elif(sulphates < 0.6):
         finalScore -= 0.4
     
-    if(alcohol > 12):
+    if(alcohol > 12 and alcohol < 15):
         finalScore += 0.7
+        message6 = "Your alcohol content is excellent!"
+
     elif(alcohol < 10.8):
         finalScore -= 0.5
+        message6 = "Your alcohol content is low. Try fermenting longer and different yeast type!"
     
     if(finalScore > 10):
-        print("Your wine is too good")
+        #print("Your wine is too good")
         print(finalScore, end = ' ') 
         finalScore = 10
     elif(finalScore < 1):
-        print("Your wine is too bad")
+        #print("Your wine is too bad")
         print(finalScore, end = ' ') 
         finalScore = 1
-    return finalScore
+    return [finalScore, message1, message2, message3, message4, message5, message6]
+
 
 # print(wineScoreCalculator(1, 9, 0.7, 0.4, 2, 0.1, 10, 30, 0.997, 3.3, 0.7, 11)) #6.8
 # print(wineScoreCalculator(0, 9, 0.7, 0.4, 2, 0.1, 10, 30, 0.997, 3.3, 0.7, 11)) #3.6
