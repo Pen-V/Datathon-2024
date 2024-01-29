@@ -19,20 +19,21 @@ wineResult = None
 wineDone = False
 wineLevel = 0 
 tempIndex = 1
-temperature = 0
+temperature = 0.0
 
-texts = ["Welcome! Click on an ingredient to start",
-        "Click on check mark to confirm your selection", 
-        "Oops~ You need to choose a type of grape first", 
-        "Great! You have picked the grape!", 
-        "Oops~ You need to choose a type of yeast first", 
-        "Great! You have picked the yeast!", 
-        "You can add additional ingredients before fermenting", 
-        "Congratulations! Your wine is finished!", 
-        "Fermenting ------ ",
-        "OH NO your wine tastes horrible :((", 
-        "WOW Your wine is exceptional :))", 
-        ""
+texts = ["Welcome! Click on an ingredient to start", #0
+        "Click on check mark to confirm your selection", #1
+        "Oops~ You need to choose a type of grape first", #2
+        "Great! You have picked the grape!",            #3
+        "Oops~ You need to choose a type of yeast first",  #4
+        "Great! You have picked the yeast!",                #5
+        "You can add additional ingredients before fermenting", #6
+        "Congratulations! Your wine is finished!",  #7
+        "Fermenting ---",                            #8
+        "You need to adjust your tempearture!",    #9
+        "OH NO your wine tastes horrible :((", #10
+        "WOW Your wine is exceptional :))", #11
+        "" #-1 make the text disappear
 ]
 textIndex = 0
 
@@ -152,26 +153,24 @@ ferment_button = button.Button(754, 510, fermentBackground, 1)
 # temperatureSlider = Slider(screen, 320, 325, 150, 20, min=10.0, max=40.0, step=0.5)
 # temperatureText = TextBox(screen, 375, 350, 50, 25, fontSize=13)
 # temperatureText.disable()
-temperatureSlider = Slider(screen, 470, 330, 20, 20, min=10.0, max=40.0, step=0.5)
-temperatureText = TextBox(screen, 420, 440, 43, 20, fontSize=12, radius = 5)
+temperatureSlider = Slider(screen, 470, 330, 20, 20, min=0.0, max=40.0, step=0.5)
+temperatureText = TextBox(screen, 420, 440, 43, 20, fontSize=12)
 temperatureText.disable()
 temperatureSlider.vertical = True
 temperatureSlider._height = 240
+temperatureSlider.value = temperature
 
 while True:
-
     #refresh temperature slider text
-    temperature = temperatureSlider.getValue()
-    #temperatureText.setText(temperature)
-    #temperatureSlider.value = temperature
-    temperatureText.setText(str(round(temperatureSlider.getValue(), 1)) + " ˚C")
+    temperature = temperatureSlider.getValue()  
+    temperatureText.setText(str(round(temperature, 1)) + " ˚C")
 
     #load background, barrel, and title
     screen.fill((165,42,42))
     screen.blit(background, (0, 0))
     screen.blit(barrelImage, (30, 290))
     screen.blit(titleSurface, (72, 30))
-    pygame.draw.line(screen, '#c88949', (250, 360), (300, 390), 15)
+    pygame.draw.line(screen, '#CD7F32', (250, 360), (300, 390), 15)
 
     #if game is done
     if wineDone == True:
@@ -180,9 +179,13 @@ while True:
         pygame.draw.line(screen, '#DAA520', (50, 275), (350, 275), 5)
         pygame.draw.line(screen, '#DAA520', (50, 100), (50, 275), 5)
 
-    #load and fill wine glass once finished fermenting
-    if gameDone == True:
+    #  #if game is done
+    # if wineDone == True:
+    #     pygame.draw.rect(screen, 'white', (0, 100, 300, 175))
+    #     screen.blit(pygame.font.SysFont('timesnewroman', 50).render('TADA', True, 'black'), ((75, 150)))
 
+    #Animation: fill wine glass once finished fermenting
+    if gameDone == True:
         wineImage = pygame.image.load('wine.png')
         wineImage = pygame.transform.smoothscale(wineImage, (85, 85))
         wineImage = wineImage.subsurface(0, 85-wineLevel, 85, wineLevel)
@@ -191,10 +194,8 @@ while True:
             wineLevel += .7
             pygame.draw.line(screen, '#700a00', (300, 390), (300, 425), 5)
             pygame.draw.line(screen, '#CD7F32', (250, 360), (300, 390), 15)
-
         if wineLevel > 53:
             wineDone = True
-
         glassImage = pygame.image.load('glass.png')
         glassImage = pygame.transform.smoothscale(glassImage, (180, 220))
         screen.blit(glassImage, (240, 400))
@@ -239,7 +240,7 @@ while True:
     screen.blit(citricSurface, (765, 470))
 
     #create instructions words
-    instructionsSurface = pygame.font.SysFont('timesnewroman', 15).render(texts[textIndex], True, 'white')
+    instructionsSurface = pygame.font.SysFont('timesnewroman', 15).render(texts[textIndex], True, 'gold')
     screen.blit(instructionsSurface, (30, 100))
     # instructionsSurface = pygame.font.SysFont('timesnewroman', 15).render("instructions", True, 'white')
     # screen.blit(instructionsSurface, (30, 115))
@@ -248,7 +249,7 @@ while True:
     if grapeCheck == False or grapeSelected == "Merlot":
         if merlot_button.draw(screen):
             if(not grapeCheck): 
-                textIndex = 1
+                textIndex = 1 #prompt to confirm selection 
             if grapeSelected != "Merlot" and grapeCheck == False:
                 grapeSelected = 'Merlot'
                 grapePh = 3.3
@@ -258,7 +259,7 @@ while True:
     if grapeCheck == False or grapeSelected == "Cabernet":
         if cabSau_button.draw(screen):
             if(not grapeCheck):
-                textIndex = 1
+                textIndex = 1 #prompt to confirm selection 
             if grapeSelected != "Cabernet" and grapeCheck == False:
                 grapeSelected = 'Cabernet'
                 grapePh = 3.35
@@ -268,7 +269,7 @@ while True:
     if grapeCheck == False or grapeSelected == "Pinot Noir":
         if pinot__button.draw(screen):
             if(not grapeCheck):
-                textIndex = 1
+                textIndex = 1 #prompt to confirm selection 
             if grapeSelected != "Pinot Noir" and grapeCheck == False:
                 grapeSelected = 'Pinot Noir'
                 grapePh = 3.25
@@ -279,9 +280,9 @@ while True:
     #only if one grape is selected
     if check_button.draw(screen):
         if grapeSelected == '':
-            textIndex = 2
+            textIndex = 2 #prompt to choose a grape 
         if grapeSelected != '' and grapeCheck == False:
-            textIndex = 3
+            textIndex = 3 #grape selection success
             grapeCheck = True
             #animate grape selection
             if grapeSelected == "Merlot":
@@ -305,7 +306,8 @@ while True:
     if yeastCheck == False or yeastSelected == "S. Cerevisiae":
         if cerev_button.draw(screen):
             if(not yeastCheck):
-                textIndex = 1
+                textIndex = 1  #prompt to confirm selection
+            #display yeast info on the side
             if yeastSelected != "S. Cerevisiae" and yeastCheck == False:
                 yeastSelected = 'S. Cerevisiae'
                 yeastTemp = "22 - 30 ˚C"
@@ -315,7 +317,7 @@ while True:
     if yeastCheck == False or yeastSelected == "Montrachet":
         if montra_button.draw(screen):
             if(not yeastCheck):
-                textIndex = 1
+                textIndex = 1  #prompt to confirm selection
             if yeastSelected != "Montrachet" and yeastCheck == False:
                 yeastSelected = 'Montrachet'
                 yeastTemp = "12 - 35 ˚C"
@@ -325,7 +327,7 @@ while True:
     if yeastCheck == False or yeastSelected == "Prise de Mousse":
         if prise_button.draw(screen):
             if(not yeastCheck):
-                textIndex = 1
+                textIndex = 1 #prompt to confirm selection
             if yeastSelected != "Prise de Mousse" and yeastCheck == False:
                 yeastSelected = 'Prise de Mousse'
                 yeastTemp = "7 - 35 ˚C"
@@ -338,7 +340,7 @@ while True:
         if yeastSelected != '':
             if not yeastCheck: 
                 yeastCheck = True
-                textIndex = 5
+                textIndex = 5 #yeast selection success
                 #animate yeast selection
                 if yeastSelected == "S. Cerevisiae":
                     yeastUsed = cl.Yeast("S. Cerevisiae", 13.5, 26, 2, 4)
@@ -351,7 +353,7 @@ while True:
                     animatedYeast = 'prise.png'
                 triggerYeastAnimation = True
         else:
-            textIndex = 4
+            textIndex = 4 #if no yeast, prompt to choose yeast
     
     #animate yeast dropping
     if triggerYeastAnimation and yeastAnimationY < 270:
@@ -360,7 +362,7 @@ while True:
         yeastAnimationY += 3
 
     #next step/add additional ingredients instructions 
-    if(yeastCheck and grapeCheck and not isFermenting and not gameDone):
+    if(yeastCheck and grapeCheck and not isFermenting and not gameDone and not textIndex == 9):
         textIndex = 6
 
     #load sugar button
@@ -385,21 +387,24 @@ while True:
         if(not gameDone):
             if(grapeCheck): 
                 if(yeastCheck): 
-                    if isFermenting == False:
-                        #print('buh')
-                        isFermenting = True
+                    if(yeastUsed.isGoodTemp(temperature)):
+                        if isFermenting == False:
+                            isFermenting = True
+                        else:
+                            isFermenting = False
+                            tempIndex = (temperature/yeastUsed.temp)
+                            fermentTime = (pygame.time.get_ticks() - firstTime) / 1000
+                            print(fermentTime)
+                            wineResult = calc.ferment(grapeUsed, yeastUsed, SO2Level, sugarLevel, citrAcidLevel, fermentTime, tempIndex)
+                            print(wineResult)
+                            gameDone = True
+                            textIndex = 7 #wine completed
                     else:
-                        isFermenting = False
-                        fermentTime = (pygame.time.get_ticks() - firstTime) / 1000
-                        print(fermentTime)
-                        wineResult = calc.ferment(grapeUsed, yeastUsed, SO2Level, sugarLevel, citrAcidLevel, fermentTime, tempIndex)
-                        print(wineResult)
-                        gameDone = True
-                        textIndex = 7
+                        textIndex = 9 #not within temperature range
                 else:
-                    textIndex = 4
+                    textIndex = 4 #no yeast added
             else:
-                textIndex = 2
+                textIndex = 2 #no grape added
     
     #start the timer when fermentation starts
     if isFermenting and (not gameDone):
@@ -413,12 +418,12 @@ while True:
         screen.blit(pygame.font.SysFont('oldenglishtext', 50).render("Ferment", True, '#DAA520'), (786, 527))
     elif(isFermenting == False and gameDone == True):
         textIndex = -1
-        screen.blit(pygame.font.SysFont('oldenglishtext', 35).render("Completed", True, '#DAA520'), (800, 515))
-        screen.blit(pygame.font.SysFont('oldenglishtext', 35).render("Day " + str(time), True, '#DAA520'), (830, 555))
+        screen.blit(pygame.font.SysFont('oldenglishtext', 50).render("Completed", True, '#DAA520'), (800, 515))
+        screen.blit(pygame.font.SysFont('oldenglishtext', 50).render("Day " + str(time), True, '#DAA520'), (830, 555))
     else:
         textIndex = 8
-        screen.blit(pygame.font.SysFont('oldenglishtext', 35).render("Click to Stop", True, '#DAA520'), (780, 515))
-        screen.blit(pygame.font.SysFont('oldenglishtext', 35).render("Day " + str(time), True, '#DAA520'), (830, 555))
+        screen.blit(pygame.font.SysFont('oldenglishtext', 50).render("Click to Stop", True, '#DAA520'), (780, 515))
+        screen.blit(pygame.font.SysFont('oldenglishtext', 50).render("Day " + str(time), True, '#DAA520'), (830, 555))
 
     #load temperature label
     screen.blit(pygame.font.SysFont('timesnewroman', 20).render("Temperature", True, 'white'), (425, 275))
