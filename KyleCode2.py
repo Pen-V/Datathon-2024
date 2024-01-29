@@ -31,6 +31,7 @@ yeastTemp = 0
 yeastAlc = 0
 yeastSpeed = 0
 yeastCheck = False
+temperature = 0
 
 isFermenting = False
 hasTime = False
@@ -118,14 +119,18 @@ fermentBackground = pygame.transform.smoothscale(fermentBackground, (300, 150))
 ferment_button = button.Button(754, 510, fermentBackground, 1)
 
 #create temperature slider
-temperatureSlider = Slider(screen, 320, 325, 150, 20, min=0, max=99, step=1)
-temperatureText = TextBox(screen, 385, 360, 20, 20, fontSize=12)
+temperatureSlider = Slider(screen, 470, 340, 20, 20, min=0, max=99, step=1)
+temperatureText = TextBox(screen, 440, 450, 20, 20, fontSize=12)
 temperatureText.disable()
+temperatureSlider.vertical = True
+temperatureSlider._height = 240
 
 while True:
 
     #refresh temperature slider text
-    temperatureText.setText(temperatureSlider.getValue())
+    temperature = temperatureSlider.getValue()
+    temperatureText.setText(temperature)
+    temperatureSlider.value = temperature
 
     #load background, barrel, and title
     screen.fill((165,42,42))
@@ -203,7 +208,8 @@ while True:
     #create instructions
     instructionsSurface = pygame.font.SysFont('timesnewroman', 15).render("instructions", True, 'white')
     screen.blit(instructionsSurface, (30, 100))
-
+    instructionsSurface = pygame.font.SysFont('timesnewroman', 15).render("instructions", True, 'white')
+    screen.blit(instructionsSurface, (30, 115))
 
     #load grape buttons
     if grapeCheck == False or grapeSelected == "Merlot":
@@ -339,7 +345,7 @@ while True:
         screen.blit(pygame.font.SysFont('oldenglishtext', 50).render("Stop(" + str(time) + 's)', True, '#DAA520'), (786, 527))
 
     #load temperature label
-    screen.blit(pygame.font.SysFont('timesnewroman', 20).render("Temperature", True, 'white'), (345, 295))
+    screen.blit(pygame.font.SysFont('timesnewroman', 20).render("Temperature", True, 'white'), (425, 275))
 
     #check quit
     for event in pygame.event.get():
