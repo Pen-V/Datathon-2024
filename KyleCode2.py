@@ -5,6 +5,7 @@ from sys import exit
 import button
 from pygame_widgets.slider import Slider
 from pygame_widgets.textbox import TextBox
+import time as delay
 
 #variables
 SCREEN_WIDTH = 1000
@@ -35,6 +36,7 @@ isFermenting = False
 hasTime = False
 gameDone = False
 wineLevel = 0
+wineDone = False
 
 #initialize
 pygame.init
@@ -132,6 +134,11 @@ while True:
     screen.blit(barrelImage, (30, 290))
     screen.blit(titleSurface, (72, 30))
 
+    #if game is done
+    if wineDone == True:
+        pygame.draw.rect(screen, 'white', (0, 100, 300, 175))
+        screen.blit(pygame.font.SysFont('timesnewroman', 50).render('TADA', True, 'black'), ((75, 150)))
+
     #load wine glass
     if gameDone == True:
 
@@ -144,9 +151,15 @@ while True:
             pygame.draw.line(screen, '#700a00', (300, 390), (300, 425), 5)
             pygame.draw.line(screen, '#CD7F32', (250, 360), (300, 390), 15)
 
+        if wineLevel > 53:
+            wineDone = True
+            print('y')
+
         glassImage = pygame.image.load('glass.png')
         glassImage = pygame.transform.smoothscale(glassImage, (180, 220))
         screen.blit(glassImage, (240, 400))
+
+
 
     #load lines on card
     pygame.draw.line(screen, 'white', (750,0), (750,600), 5)
